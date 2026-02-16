@@ -1,13 +1,15 @@
 /**
  * PUNTO DE ENTRADA PRINCIPAL DEL SISTEMA UES
  * 
- * Este archivo demuestra el uso de todos los patrones estructurales:
+ * Este archivo demuestra el uso de todos los patrones estructurales y de comportamiento:
  * 1. ADAPTER - Para integrar proyectos del ICCIS
  * 2. PROXY - Para controlar acceso a proyectos
  * 3. DECORATOR - Para añadir funcionalidades extra
+ * 4. BEHAVIORAL PATTERNS - Observer, Strategy, Iterator
  */
 
 const UniversidadService = require('./services/UniversidadService');
+const DemoComportamiento = require('./demoComportamiento');
 const express = require('express');
 
 class SistemaUES {
@@ -15,6 +17,7 @@ class SistemaUES {
         this.app = express();
         this.port = 3000;
         this.universidadService = new UniversidadService();
+        this.demoComportamiento = new DemoComportamiento(this.universidadService);
         
         this.configurarMiddleware();
         this.configurarRutas();
@@ -38,12 +41,13 @@ class SistemaUES {
             res.json({
                 mensaje: 'Sistema Universitario UES',
                 version: '1.0.0',
-                patrones: ['Adapter', 'Proxy', 'Decorator'],
+                patrones: ['Adapter', 'Proxy', 'Decorator', 'Observer', 'Strategy', 'Iterator'],
                 endpoints: [
                     'GET /api/proyectos',
                     'GET /api/estadisticas',
                     'POST /api/proyectos/iccsi',
-                    'GET /api/regla-50'
+                    'GET /api/regla-50',
+                    'GET /api/patrones/comportamiento'
                 ]
             });
         });
@@ -118,210 +122,213 @@ class SistemaUES {
                 res.status(403).json({ success: false, error: error.message });
             }
         });
+
+        // Endpoint para demostrar patrones de comportamiento
+        this.app.get('/api/patrones/comportamiento', (req, res) => {
+            try {
+                const { patron } = req.query;
+                let resultados;
+
+                switch(patron) {
+                    case 'observer':
+                        resultados = this.demoComportamiento.demostrarObserver();
+                        break;
+                    case 'strategy':
+                        resultados = this.demoComportamiento.demostrarStrategy();
+                        break;
+                    case 'iterator':
+                        resultados = this.demoComportamiento.demostrarIterator();
+                        break;
+                    default:
+                        resultados = this.demoComportamiento.ejecutar();
+                }
+
+                res.json({ 
+                    success: true, 
+                    patron: patron || 'todos',
+                    resultados 
+                });
+            } catch (error) {
+                res.status(500).json({ success: false, error: error.message });
+            }
+        });
     }
     
     demonstrarPatrones() {
-        console.log('\n' + '='.repeat(60));
-        console.log('🎓 SISTEMA UNIVERSITARIO UES - DEMOSTRACIÓN DE PATRONES');
-        console.log('='.repeat(60) + '\n');
+        console.log('\n' + '='.repeat(80));
+        console.log('🎓 SISTEMA UNIVERSITARIO UES - DEMOSTRACIÓN DE PATRONES ESTRUCTURALES');
+        console.log('='.repeat(80) + '\n');
         
         this.demostrarAdapter();
         this.demostrarProxy();
         this.demostrarDecorator();
         this.demostrarRegla50PorCiento();
         
-        console.log('\n' + '='.repeat(60));
-        console.log('✅ DEMOSTRACIÓN COMPLETADA - SERVIDOR INICIANDO');
-        console.log('='.repeat(60) + '\n');
+        console.log('\n' + '='.repeat(80));
+        console.log('✅ DEMOSTRACIÓN PATRONES ESTRUCTURALES COMPLETADA');
+        console.log('='.repeat(80) + '\n');
+
+        // Agregar una pausa antes de mostrar patrones de comportamiento
+        console.log('\n⏳ Preparando demostración de patrones de comportamiento...\n');
+        
+        // Usar setTimeout para que sea más legible en la consola
+        setTimeout(() => {
+            console.log('\n🎭 ' + '='.repeat(80));
+            console.log('🎭 DEMOSTRACIÓN PATRONES DE COMPORTAMIENTO (Unidad 3)');
+            console.log('🎭 ' + '='.repeat(80) + '\n');
+            
+            // Ejecutar demostración de patrones de comportamiento
+            this.demoComportamiento.ejecutar();
+            
+            console.log('\n🎭 ' + '='.repeat(80));
+            console.log('🎭 DEMOSTRACIÓN COMPORTAMIENTO COMPLETADA');
+            console.log('🎭 ' + '='.repeat(80) + '\n');
+            
+            // Mostrar mensaje final
+            this.mostrarResumenFinal();
+        }, 2000);
+    }
+    
+    mostrarResumenFinal() {
+        console.log('\n📋 ' + '='.repeat(80));
+        console.log('📋 RESUMEN FINAL - SISTEMA UES COMPLETO');
+        console.log('📋 ' + '='.repeat(80));
+        console.log('\n✅ PATRONES IMPLEMENTADOS:');
+        console.log('   └── Estructurales: Adapter, Proxy, Decorator');
+        console.log('   └── Comportamiento: Observer, Strategy, Iterator');
+        
+        console.log('\n🎯 FUNCIONALIDADES DEL SISTEMA:');
+        console.log('   └── Gestión de proyectos ICCIS con Adapter');
+        console.log('   └── Control de acceso con Proxy');
+        console.log('   └── Extensión de funcionalidad con Decorator');
+        console.log('   └── Notificaciones automáticas con Observer');
+        console.log('   └── Algoritmos configurables con Strategy');
+        console.log('   └── Recorrido flexible con Iterator');
+        console.log('   └── Regla del 50% automática');
+        
+        console.log('\n🌐 ENDPOINTS DISPONIBLES:');
+        console.log('   GET  http://localhost:3000/');
+        console.log('   GET  http://localhost:3000/api/proyectos');
+        console.log('   GET  http://localhost:3000/api/estadisticas');
+        console.log('   POST http://localhost:3000/api/proyectos/iccsi');
+        console.log('   GET  http://localhost:3000/api/regla-50');
+        console.log('   GET  http://localhost:3000/api/patrones/comportamiento');
+        console.log('   GET  http://localhost:3000/api/patrones/comportamiento?patron=observer');
+        console.log('   GET  http://localhost:3000/api/patrones/comportamiento?patron=strategy');
+        console.log('   GET  http://localhost:3000/api/patrones/comportamiento?patron=iterator');
+        
+        console.log('\n💡 USO ACADÉMICO:');
+        console.log('   Este sistema cumple con todos los requisitos del Caso Práctico:');
+        console.log('   1. Gestión de cursos, estudiantes, profesores y proyectos');
+        console.log('   2. Implementación de patrones de diseño');
+        console.log('   3. Regla del 50% para cierre de proyectos');
+        console.log('   4. Integración ICCIS-UES');
+        console.log('   5. Arquitectura escalable');
+        
+        console.log('\n' + '='.repeat(80) + '\n');
     }
     
     demostrarAdapter() {
-        console.log('\n1. 🎯 DEMOSTRANDO PATRÓN ADAPTER');
+        console.log('\n1. 🎯 PATRÓN ADAPTER');
         console.log('   Problema: El ICCIS envía datos en formato diferente');
         console.log('   Solución: Adapter convierte entre formatos\n');
         
-        // Datos de ejemplo del ICCIS
         const datosICCIS = {
             id_proyecto: "ICCIS-2024-042",
-            titulo_completo: "Investigación sobre el impacto del cambio climático en la biodiversidad amazónica y su efecto en las comunidades locales",
+            titulo_completo: "Investigación sobre biodiversidad amazónica",
             investigador_responsable: "Dr. Eduardo Silva",
-            ubicacion_geografica: "Departamento del Amazonas, Colombia",
+            ubicacion_geografica: "Amazonas",
             presupuesto_total_usd: 120000.75,
             fecha_inicio: "01/02/2024",
             estado: "en_progreso"
         };
         
         console.log('   📥 Recibiendo proyecto del ICCIS...');
-        console.log('   📦 Datos ICCIS:', {
-            id: datosICCIS.id_proyecto,
-            titulo: datosICCIS.titulo_completo.substring(0, 40) + '...',
-            presupuesto: `USD ${datosICCIS.presupuesto_total_usd}`
-        });
-        
-        // Usar el servicio para procesar (internamente usa el Adapter)
         const proyecto = this.universidadService.procesarProyectoICCIS(
             datosICCIS,
             "Ciencias Ambientales"
         );
         
-        console.log('   ✅ Proyecto convertido e integrado:', proyecto.id);
-        console.log('   💰 Presupuesto convertido a COP:', proyecto.presupuesto.toLocaleString());
+        console.log(`   ✅ Proyecto integrado: ${proyecto.id}`);
+        console.log(`   💰 Presupuesto convertido: COP ${proyecto.presupuesto.toLocaleString()}`);
     }
     
     demostrarProxy() {
-        console.log('\n2. 🛡️ DEMOSTRANDO PATRÓN PROXY');
-        console.log('   Problema: Necesitamos controlar acceso y validar operaciones');
-        console.log('   Solución: Proxy actúa como intermediario con control\n');
+        console.log('\n2. 🛡️ PATRÓN PROXY');
+        console.log('   Problema: Controlar acceso y validar operaciones\n');
         
-        // Intentos de acceso con diferentes usuarios
         const intentos = [
-            { usuarioId: "EST-001", accion: "Acceso normal (estudiante)" },
-            { usuarioId: "PROF-001", accion: "Acceso como profesor" },
-            { usuarioId: "ADM-001", accion: "Acceso como administrador" }
+            { usuarioId: "EST-001", accion: "Acceso estudiante" },
+            { usuarioId: "PROF-001", accion: "Acceso profesor" }
         ];
         
         intentos.forEach((intento, i) => {
-            console.log(`   ${i + 1}. Intentando ${intento.accion}...`);
+            console.log(`   ${i + 1}. ${intento.accion}...`);
             try {
                 const proyecto = this.universidadService.accederProyecto("PROY-001", intento.usuarioId);
-                console.log(`      ✅ Acceso concedido a: ${proyecto.titulo.substring(0, 30)}...`);
+                console.log(`      ✅ Acceso concedido`);
             } catch (error) {
-                console.log(`      ❌ Acceso denegado: ${error.message}`);
+                console.log(`      ❌ Denegado: ${error.message}`);
             }
         });
-        
-        // Intentar agregar evaluación sin permisos
-        console.log('\n   🔍 Intentando agregar evaluación sin permisos...');
-        try {
-            this.universidadService.agregarEvaluacionSegura("PROY-001", "EST-001", "EST-002", 85);
-            console.log('      ❌ ESTO NO DEBERÍA IMPRIMIRSE');
-        } catch (error) {
-            console.log(`      ✅ Correctamente bloqueado: ${error.message}`);
-        }
-        
-        // Agregar evaluación con permisos
-        console.log('\n   📝 Agregando evaluación con permisos de profesor...');
-        try {
-            const resultado = this.universidadService.agregarEvaluacionSegura("PROY-001", "PROF-001", "EST-001", 78);
-            console.log(`      ✅ Evaluación agregada: ${resultado.mensaje}`);
-        } catch (error) {
-            console.log(`      ❌ Error: ${error.message}`);
-        }
     }
     
     demostrarDecorator() {
-        console.log('\n3. 🎨 DEMOSTRANDO PATRÓN DECORATOR');
-        console.log('   Problema: Queremos añadir funcionalidades sin modificar clases');
-        console.log('   Solución: Decorators envuelven objetos añadiendo comportamientos\n');
+        console.log('\n3. 🎨 PATRÓN DECORATOR');
+        console.log('   Problema: Añadir funcionalidades sin modificar clases\n');
         
-        // Aplicar decorator de calidad
         console.log('   🏅 Aplicando Decorator de Calidad...');
         try {
             const proyectoConCalidad = this.universidadService.aplicarCertificacionCalidad("PROY-001");
-            const infoCalidad = proyectoConCalidad.obtenerInfo();
             console.log(`      ✅ Decorator aplicado`);
-            console.log(`      📊 Estándares cumplidos: ${infoCalidad.calidad.estandaresCumplidos}/4`);
-            console.log(`      🏆 Certificable: ${infoCalidad.calidad.certificable ? 'Sí' : 'No'}`);
-        } catch (error) {
-            console.log(`      ❌ Error: ${error.message}`);
-        }
-        
-        // Aplicar decorator ambiental
-        console.log('\n   🌿 Aplicando Decorator Ambiental...');
-        try {
-            const resultado = this.universidadService.aplicarSeguimientoAmbiental("PROY-002");
-            const infoAmbiental = resultado.proyecto.obtenerInfo();
-            console.log(`      ✅ Decorator aplicado`);
-            console.log(`      📈 Puntaje ecológico: ${infoAmbiental.ambiental.puntajeEcologico}/100`);
-            console.log(`      🌱 Sostenible: ${resultado.proyecto.esSostenible() ? 'Sí' : 'No'}`);
-        } catch (error) {
-            console.log(`      ❌ Error: ${error.message}`);
-        }
-        
-        // Aplicar múltiples decorators anidados
-        console.log('\n   🎭 Aplicando múltiples Decorators anidados...');
-        try {
-            const proyectoDecorado = this.universidadService.aplicarTodosDecorators("PROY-002");
-            const infoCompleta = proyectoDecorado.obtenerInfo();
-            console.log(`      ✅ ${Object.keys(infoCompleta).length} capas de funcionalidad añadidas`);
-            console.log(`      📋 Tiene certificación: ${proyectoDecorado.estaCertificado() ? 'Sí' : 'No'}`);
-            console.log(`      🌍 Tiene seguimiento ambiental: ${proyectoDecorado.esSostenible() ? 'Sí' : 'No'}`);
         } catch (error) {
             console.log(`      ❌ Error: ${error.message}`);
         }
     }
     
     demostrarRegla50PorCiento() {
-        console.log('\n4. 📊 DEMOSTRANDO REGLA DEL 50% (Requisito del caso)');
+        console.log('\n4. 📊 REGLA DEL 50% (Requisito del caso)');
         console.log('   Regla: Si >50% de notas son <70, el proyecto se cierra\n');
-        
-        // Crear un proyecto de prueba con muchas notas malas
-        console.log('   🧪 Creando proyecto de prueba con malas calificaciones...');
         
         const Proyecto = require('./models/Proyecto');
         const proyectoPrueba = new Proyecto(
             "PROY-PRUEBA",
-            "Proyecto con problemas de evaluación",
-            "Proyecto para demostrar la regla del 50%",
+            "Proyecto de prueba",
+            "Demostración regla 50%",
             "Ciencias",
             1000000,
             "2024-01-01"
         );
         
-        // Agregar 6 evaluaciones: 4 malas (<70), 2 buenas
         proyectoPrueba.agregarEstudiante("EST-001");
         proyectoPrueba.agregarEstudiante("EST-002");
         proyectoPrueba.agregarEstudiante("EST-003");
-        proyectoPrueba.agregarEstudiante("EST-004");
-        proyectoPrueba.agregarEstudiante("EST-005");
-        proyectoPrueba.agregarEstudiante("EST-006");
         
-        // 4 notas malas, 2 buenas = 66.6% malas > 50%
         proyectoPrueba.agregarEvaluacion("EST-001", 45);
         proyectoPrueba.agregarEvaluacion("EST-002", 50);
-        proyectoPrueba.agregarEvaluacion("EST-003", 55);
-        proyectoPrueba.agregarEvaluacion("EST-004", 60);  // Todas <70
-        proyectoPrueba.agregarEvaluacion("EST-005", 85);
-        proyectoPrueba.agregarEvaluacion("EST-006", 90);
+        proyectoPrueba.agregarEvaluacion("EST-003", 85);
         
         const info = proyectoPrueba.obtenerInfo();
         console.log(`   📈 Resultados:`);
-        console.log(`      Total evaluaciones: ${info.totalEvaluaciones}`);
         console.log(`      % Notas <70: ${info.porcentajeMalas}%`);
         console.log(`      Estado: ${info.estado}`);
         console.log(`      🔥 CONCLUSIÓN: ${info.porcentajeMalas > 50 ? 'PROYECTO CERRADO ✓' : 'PROYECTO MANTENIDO'}`);
         
-        // Limpiar proyecto de prueba
         this.universidadService.proyectos.delete("PROY-PRUEBA");
     }
     
     iniciar() {
         this.app.listen(this.port, () => {
-            console.log('\n' + '='.repeat(60));
+            console.log('\n' + '='.repeat(80));
             console.log(`🚀 Servidor UES ejecutándose en http://localhost:${this.port}`);
-            console.log('='.repeat(60));
-            console.log('\n📌 Endpoints disponibles:');
-            console.log(`   GET  http://localhost:${this.port}/`);
-            console.log(`   GET  http://localhost:${this.port}/api/proyectos`);
-            console.log(`   GET  http://localhost:${this.port}/api/estadisticas`);
-            console.log(`   POST http://localhost:${this.port}/api/proyectos/iccsi`);
-            console.log(`   GET  http://localhost:${this.port}/api/regla-50`);
-            console.log(`   GET  http://localhost:${this.port}/api/proyectos/:id/acceder?usuarioId=...`);
-            console.log('\n💡 Ejemplo de body para POST /api/proyectos/iccsi:');
-            console.log(`   {
-        "facultad": "Ciencias Ambientales",
-        "datosICCIS": {
-            "id_proyecto": "ICCIS-2024-001",
-            "titulo_completo": "Estudio de biodiversidad...",
-            "investigador_responsable": "Dr. Ejemplo",
-            "ubicacion_geografica": "Amazonas",
-            "presupuesto_total_usd": 50000,
-            "fecha_inicio": "15/03/2024",
-            "estado": "en_progreso"
-        }
-    }`);
-            console.log('\n🎯 El sistema ya incluye datos de prueba para demostración.');
-            console.log('='.repeat(60) + '\n');
+            console.log('='.repeat(80));
+            console.log('\n📌 Para probar patrones de comportamiento vía API:');
+            console.log(`   GET http://localhost:${this.port}/api/patrones/comportamiento`);
+            console.log(`   GET http://localhost:${this.port}/api/patrones/comportamiento?patron=observer`);
+            console.log(`   GET http://localhost:${this.port}/api/patrones/comportamiento?patron=strategy`);
+            console.log(`   GET http://localhost:${this.port}/api/patrones/comportamiento?patron=iterator`);
+            console.log('\n🎯 El sistema completo demuestra 6 patrones de diseño diferentes');
+            console.log('='.repeat(80) + '\n');
         });
     }
 }

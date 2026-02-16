@@ -1,30 +1,63 @@
 {
-  "name": "proyectocaso2",
+  "name": "proyecto-ues-icciis",
   "version": "1.0.0",
-  "description": "Proyecto educativo de patrones de diseño UES-ICCIIS",
-  "main": "src/main.js",
+  "description": "Sistema educativo UES-ICCIIS con implementación de patrones de diseño",
   
+  "main": "src/main.js",
   "scripts": {
     "start": "node src/main.js",
     "dev": "nodemon src/main.js",
-    "test": "jest"
+    "demo": "node src/demoComportamiento.js",
+    "demo:observer": "node src/demoComportamiento.js --observer",
+    "demo:strategy": "node src/demoComportamiento.js --strategy",
+    "demo:iterator": "node src/demoComportamiento.js --iterator",
+    "test": "jest",
+    "test:unit": "jest --testPathPattern=test/unit",
+    "test:integration": "jest --testPathPattern=test/integration",
+    "test:patterns": "jest --testPathPattern=test/patterns",
+    "lint": "eslint src/",
+    "format": "prettier --write src/"
   },
   "keywords": [
     "design-patterns",
     "nodejs",
     "educational",
     "ues",
-    "icciis"
+    "icciis",
+    "university-system",
+    "adapter",
+    "proxy",
+    "decorator",
+    "observer",
+    "strategy",
+    "iterator"
   ],
-  "author": "",
+  "author": "Equipo UES-ICCIIS",
   "license": "ISC",
   "dependencies": {
-  "express": "^5.2.1"
+    "express": "^5.2.1",
+    "cors": "^2.8.6",
+    "dotenv": "^17.2.4"
   },
   "devDependencies": {
-    "cors": "^2.8.6",
-    "dotenv": "^17.2.4",
     "jest": "^30.2.0",
-    "nodemon": "^3.1.11"
-  }
+    "nodemon": "^3.1.11",
+    "eslint": "^9.17.0",
+    "prettier": "^3.4.2",
+    "supertest": "^7.0.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ues-icciis/proyecto-patrones-diseno.git"
+  },
+  "bugs": {
+    "url": "https://github.com/ues-icciis/proyecto-patrones-diseno/issues"
+  },
+  "homepage": "https://github.com/ues-icciis/proyecto-patrones-diseno#readme",
+  "contributors": [
+    "Estudiante UES <estudiante@ues.edu>"
+  ]
 }
